@@ -1,0 +1,8 @@
+{
+  "appId": "it.silicia.covit",
+  "appName": "cov-it",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}

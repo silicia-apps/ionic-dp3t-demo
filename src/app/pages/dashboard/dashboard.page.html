@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header [color]="(this.dati$ | async).isActive?'success':'danger'">
+      <ion-toolbar [color]="(this.dati$ | async).isActive?'success':'danger'">
+        <ion-card-title *ngIf="(this.dati$ | async).isActive"
+          >{{ 'TRACKING_OK' | translate }}</ion-card-title
+        >
+        <ion-card-title *ngIf="!(this.dati$ | async).isActive"
+          >{{ 'TRACKING_KO' | translate }}</ion-card-title
+        >
+        <ion-buttons slot="end">
+          <ion-button size="large" (click)="this.goTracking()">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-card-header>
+    <ion-card-content>
+      <br />
+      <ion-img [src]="'TRACKING_IMG' | translate"></ion-img>
+      <br />
+      <ion-card-subtitle>
+        <p>
+          <ion-text *ngIf="(this.dati$ | async).isActive"
+            >{{ 'TRACKING_OK_INFO' | translate }}</ion-text
+          >
+          <ion-text *ngIf="!(this.dati$ | async).isActive"
+            >{{ 'TRACKING_KO_INFO' | translate }}</ion-text
+          >
+        </p>
+      </ion-card-subtitle></ion-card-content
+    >
+  </ion-card>
+  <ion-card>
+    <ion-card-header color="primary">
+      <ion-card-title>{{ 'REPORT_TITLE' | translate }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <br />
+      <ion-img [src]="'REPORT_IMG' | translate"></ion-img>
+      <br />
+      <ion-card-subtitle>
+        <p><ion-text>{{ 'REPORT_INFO_NO' | translate }}</ion-text></p>
+      </ion-card-subtitle></ion-card-content
+    >
+  </ion-card>
+  <ion-card>
+    <ion-card-header color="warning">
+      <ion-card-title>{{ 'INFO_TITLE' | translate }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <br />
+      <ion-card-subtitle>
+        <p>
+          <ion-text>{{ 'INFO_APP' | translate }}</ion-text>
+        </p> </ion-card-subtitle
+      ><br
+    /></ion-card-content>
+  </ion-card>
+</ion-content>

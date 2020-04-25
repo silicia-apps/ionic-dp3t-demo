@@ -1,0 +1,50 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Tracciamento
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Tracciamento</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-toolbar>
+          Tracciamento
+          <ion-toggle slot="end" color="success" (ionChange)="this.onChangeDP3T($event)"></ion-toggle>
+        </ion-toolbar>
+      </ion-card-title>
+      <ion-card-subtitle>
+        <ion-label>Ultimo Aggiornamento</ion-label>
+        {{ (this.dati$ | async)?.lastSyncUpdate | date }}
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <check-device></check-device>
+    </ion-card-content>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>devices contattati</ion-label>
+        {{ (this.dati$ | async)?.numberOfContacts }}
+      </ion-item>
+      <ion-item>
+        <ion-label>Visibile</ion-label>
+        {{ (this.dati$ | async)?.advertising }}
+      </ion-item>
+      <ion-item>
+        <ion-label>In Ricezione</ion-label>
+        {{ (this.dati$ | async)?.receiving }}
+      </ion-item>
+      <ion-item>
+        <ion-label>Contatto con positivo</ion-label>
+        {{ (this.dati$ | async)?.wasContactExposed }}
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

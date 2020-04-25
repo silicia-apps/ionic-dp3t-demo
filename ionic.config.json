@@ -1,0 +1,7 @@
+{
+  "name": "cov-it",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

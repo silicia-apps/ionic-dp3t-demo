@@ -1,0 +1,404 @@
+<ion-header translucent="true">
+  <ion-toolbar>
+    <ion-title>Dati Contagio</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="this.showBox()">
+        <ion-icon size="large" name="information-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">COV-IT</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-list>
+    <ion-item (click)="this.showPicker()" detail>
+      <ion-label>Area</ion-label>
+      {{ (this.lastArea$ | async) || 'Tutta Italia' }}
+    </ion-item>
+    <ion-item detail>
+      <ion-label>
+        Dati al
+      </ion-label>
+      <ion-datetime
+        #dataPicker
+        [ngModel]="this.day$ | async"
+        displayFormat="DD/MMM/YYYY"
+        doneText="conferma"
+        cancelText="Annulla"
+        [min]="this.minDate"
+        [max]="this.maxDate"
+        (ionChange)="this.updateFilterData(dataPicker.value)"
+      ></ion-datetime>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="(this.last$ | async); else nodata">
+    <silicia-card
+      color="tertiary"
+      title="{{ (this.last$ | async)?.totale_casi | number:'':'it' }}"
+      subtitle="Totale Casi"
+    >
+      <ion-list>
+        <ion-list>
+          <ngx-charts-line-chart
+            [results]="this.historyPositivi"
+            [legend]="true"
+            [legendPosition]="'below'"
+            [scheme]="{ domain: ['#5260ff', '#3dc2ff']}"
+            [view]="[300,300]"
+            [xAxis]="true"
+            [yAxis]="true"
+            schemeType="ordinal"
+            [showGridLines]="true"
+            [roundDomains]="true"
+          >
+          </ngx-charts-line-chart>
+        </ion-list>
+
+        <ion-item>
+          <ion-label>Tamponi eseguiti</ion-label>
+          <ion-text color="tertiary">
+            <h2>{{ (this.last$ | async)?.tamponi | number }}</h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>casi rispetto a ieri</ion-label>
+          <ion-text color="tertiary">
+            <h2>
+              {{ (this.last$ | async)?.totale_casi - (this.prev$ |
+              async)?.totale_casi | number }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Totale Positivi</ion-label>
+          <ion-text color="tertiary"
+            ><h2>
+              {{((this.last$ | async)?.isolamento_domiciliare + (this.last$ |
+              async)?.ricoverati_con_sintomi + (this.last$ |
+              async)?.terapia_intensiva) | number}}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>Non più positivi</ion-label>
+          <ion-text color="tertiary"
+            ><h2>
+              {{((this.last$ | async)?.dimessi_guariti + (this.last$ |
+              async)?.deceduti) | number}}
+            </h2></ion-text
+          >
+        </ion-item>
+        <ion-item>
+          <ion-label>Variazione Positivi</ion-label>
+          <ion-text color="tertiary">
+            <h2>
+              {{ ((this.last$ | async)?.isolamento_domiciliare + (this.last$ |
+              async)?.ricoverati_con_sintomi + (this.last$ |
+              async)?.terapia_intensiva) - ((this.prev$ |
+              async)?.isolamento_domiciliare + (this.prev$ |
+              async)?.ricoverati_con_sintomi + (this.prev$ |
+              async)?.terapia_intensiva) | number}}
+            </h2>
+          </ion-text>
+        </ion-item>
+      </ion-list>
+    </silicia-card>
+    <silicia-card
+      color="warning"
+      title="{{ (this.last$ | async)?.isolamento_domiciliare | number }}"
+      subtitle="In Isolamento Domiciliare"
+    >
+      <ion-list>
+        <ion-list>
+          <ngx-charts-line-chart
+            [results]="this.historyDomicilio"
+            [scheme]="{ domain: ['#3dc2ff']}"
+            [view]="[300,300]"
+            [xAxis]="true"
+            [yAxis]="true"
+            schemeType="ordinal"
+            [showGridLines]="true"
+            [roundDomains]="true"
+          >
+          </ngx-charts-line-chart>
+        </ion-list>
+        <ion-item>
+          <ion-label>rispetto a ieri</ion-label>
+          <ion-text color="secondary"
+            ><h2>
+              {{ (this.last$ | async)?.isolamento_domiciliare - (this.prev$ |
+              async)?.isolamento_domiciliare | number }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>perc. su casi totali</ion-label>
+          <ion-text color="secondary"
+            ><h2>
+              {{((this.last$ | async)?.isolamento_domiciliare/(this.last$ |
+              async)?.totale_casi) | percent }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>perc. su positivi attuali</ion-label>
+          <ion-text color="secondary"
+            ><h2>
+              {{((this.last$ | async)?.isolamento_domiciliare/((this.last$ |
+              async)?.terapia_intensiva + (this.last$ |
+              async)?.ricoverati_con_sintomi + (this.last$ |
+              async)?.isolamento_domiciliare)) | percent }}
+            </h2></ion-text
+          >
+        </ion-item>
+      </ion-list>
+    </silicia-card>
+    <silicia-card
+      color="secondary"
+      title="{{ (this.last$ | async)?.ricoverati_con_sintomi | number }}"
+      subtitle="Ricoverati Con Sintomi"
+    >
+      <ion-list>
+        <ion-list>
+          <ngx-charts-line-chart
+            [results]="this.historyRicoverati"
+            [scheme]="{ domain: ['#ffd534']}"
+            [view]="[300,300]"
+            [xAxis]="true"
+            [yAxis]="true"
+            schemeType="ordinal"
+            [showGridLines]="true"
+            [roundDomains]="true"
+          >
+          </ngx-charts-line-chart>
+        </ion-list>
+        <ion-item>
+          <ion-label>rispetto a ieri</ion-label>
+          <ion-text color="warning"
+            ><h2>
+              {{ (this.last$ | async)?.ricoverati_con_sintomi - (this.prev$ |
+              async)?.ricoverati_con_sintomi | number }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>perc. su casi totali</ion-label>
+          <ion-text color="warning"
+            ><h2>
+              {{((this.last$ | async)?.ricoverati_con_sintomi/(this.last$ |
+              async)?.totale_casi) | percent }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>perc. su positivi attuali</ion-label>
+          <ion-text color="warning"
+            ><h2>
+              {{((this.last$ | async)?.ricoverati_con_sintomi/((this.last$ |
+              async)?.terapia_intensiva + (this.last$ |
+              async)?.ricoverati_con_sintomi + (this.last$ |
+              async)?.isolamento_domiciliare)) | percent }}
+            </h2></ion-text
+          >
+        </ion-item>
+      </ion-list>
+    </silicia-card>
+    <silicia-card
+      color="danger"
+      title=" {{ (this.last$ | async)?.terapia_intensiva | number }}"
+      subtitle="Ricoverati in Terapia Intensiva"
+    >
+      <ion-list>
+        <ion-list>
+          <ngx-charts-line-chart
+            [results]="this.historyTerapia"
+            [scheme]="{ domain: ['#ff4961']}"
+            [view]="[300,300]"
+            [xAxis]="true"
+            [yAxis]="true"
+            schemeType="ordinal"
+            [showGridLines]="true"
+            [roundDomains]="true"
+          >
+          </ngx-charts-line-chart>
+        </ion-list>
+        <ion-item>
+          <ion-label>rispetto a ieri</ion-label>
+          <ion-text color="danger"
+            ><h2>
+              {{ (this.last$ | async)?.terapia_intensiva - (this.prev$ |
+              async)?.terapia_intensiva | number }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>perc. su casi totali</ion-label>
+          <ion-text color="danger"
+            ><h2>
+              {{((this.last$ | async)?.terapia_intensiva/(this.last$ |
+              async)?.totale_casi) | percent }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>perc. su positivi attuali</ion-label>
+          <ion-text color="danger"
+            ><h2>
+              {{((this.last$ | async)?.terapia_intensiva/((this.last$ |
+              async)?.terapia_intensiva + (this.last$ |
+              async)?.ricoverati_con_sintomi + (this.last$ |
+              async)?.isolamento_domiciliare)) | percent }}
+            </h2></ion-text
+          >
+        </ion-item>
+      </ion-list>
+    </silicia-card>
+    <silicia-card
+      color="success"
+      title="{{ (this.last$ | async)?.dimessi_guariti | number }}"
+      subtitle="Guariti"
+    >
+      <ion-list>
+        <ion-list>
+          <ngx-charts-line-chart
+            [results]="this.historyGuariti"
+            [scheme]="{ domain: ['#2fdf75']}"
+            [view]="[300,300]"
+            [xAxis]="true"
+            [yAxis]="true"
+            schemeType="ordinal"
+            [showGridLines]="true"
+            [roundDomains]="true"
+          >
+          </ngx-charts-line-chart>
+        </ion-list>
+        <ion-item>
+          <ion-label>rispetto a ieri</ion-label>
+          <ion-text color="success"
+            ><h2>
+              {{ (this.last$ | async)?.dimessi_guariti - (this.prev$ |
+              async)?.dimessi_guariti | number }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>perc. su casi totali</ion-label>
+          <ion-text color="success"
+            ><h2>
+              {{((this.last$ | async)?.dimessi_guariti/(this.last$ |
+              async)?.totale_casi) | percent }}
+            </h2>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label>perc. su non più positivi</ion-label>
+          <ion-text color="success"
+            ><h2>
+              {{((this.last$ | async)?.dimessi_guariti/((this.last$ |
+              async)?.dimessi_guariti + (this.last$ | async)?.deceduti)) |
+              percent }}
+            </h2></ion-text
+          >
+        </ion-item>
+      </ion-list>
+    </silicia-card>
+    <silicia-card
+    color="dark"
+    title=" {{ (this.last$ | async)?.deceduti | number }}"
+    subtitle="Deceduti"
+  >
+            <ion-list>
+              <ion-list>
+                <ngx-charts-line-chart
+                  [results]="this.historyDeceduti"
+                  [view]="[300,300]"
+                  [scheme]="{ domain: ['#222428']}"
+                  [xAxis]="true"
+                  [yAxis]="true"
+                  schemeType="ordinal"
+                  [showGridLines]="true"
+                  [roundDomains]="true"
+                >
+                </ngx-charts-line-chart>
+              </ion-list>
+              <ion-item>
+                <ion-label>rispetto a ieri</ion-label>
+                <ion-text color="dark"
+                  ><h2>
+                    {{ (this.last$ | async)?.deceduti - (this.prev$ |
+                    async)?.deceduti | number }}
+                  </h2>
+                </ion-text>
+              </ion-item>
+              <ion-item>
+                <ion-label>perc. su casi totali</ion-label>
+                <ion-text color="dark"
+                  ><h2>
+                    {{((this.last$ | async)?.deceduti/(this.last$ |
+                    async)?.totale_casi) | percent }}
+                  </h2>
+                </ion-text>
+              </ion-item>
+              <ion-item>
+                <ion-label>perc. su non più positivi</ion-label>
+                <ion-text color="dark"
+                  ><h2>
+                    {{((this.last$ | async)?.deceduti/((this.last$ |
+                    async)?.dimessi_guariti + (this.last$ | async)?.deceduti)) |
+                    percent }}
+                  </h2></ion-text
+                >
+              </ion-item>
+            </ion-list>
+    </silicia-card>
+  </div>
+  <ng-template #nodata>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          Dati non Disponibili
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-text *ngIf="this.lastUpdate === (this.day$ | async)"
+          >I Dati di oggi verranno pubblicati dopo le 18.00</ion-text
+        >
+        <p *ngIf="this.lastUpdate !== (this.day$ | async)">
+          Si sono verificati problemi con l'aggiornamento dei dati, controlla la
+          connessione ad internet e riprova
+        </p>
+        <p
+          *ngIf="this.lastUpdate !== '' && this.lastUpdate !== (this.day$ | async)"
+        >
+          <ion-text
+            >Hai comunque dati sul telefono aggiornati al {{
+            this.lastUpdate.substr(8,2) }}/{{ this.lastUpdate.substr(5,2) }}/{{
+            this.lastUpdate.substr(0,4) }}</ion-text
+          >
+        </p>
+      </ion-card-content>
+      <ion-card-header>
+        <ion-button expand="block" (click)="this.loadData()"
+          >Riprova</ion-button
+        >
+        <ion-button
+          *ngIf="this.lastUpdate === (this.day$ | async)"
+          expand="block"
+          (click)="this.updateFilterData(this.prevDay)"
+          >Visualizza i Dati di Ieri</ion-button
+        >
+        <ion-button
+          *ngIf="this.lastUpdate !== '' && this.lastUpdate !== (this.day$ | async)"
+          expand="block"
+          (click)="this.updateFilterData(this.lastUpdate)"
+          >Visualizza Ultimi Dati</ion-button
+        >
+      </ion-card-header>
+    </ion-card>
+  </ng-template>
+</ion-content>

@@ -1,0 +1,99 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>
+      {{ 'APP_NAME' | translate }}
+    </ion-title>
+    <ion-buttons slot="end" *ngIf="showSkip">
+      <ion-button (click)="this.onSkip()" color="primary">{{ 'SKIP_BUTTON' | translate }}</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ 'APP_NAME' | translate }}</ion-title>
+      <ion-buttons slot="end" *ngIf="showSkip">
+        <button (click)="this.onSkip()" ion-button color="primary">
+          {{ 'SKIP_BUTTON' | translate }}
+        </button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-slides
+    pager="true"
+    dir="{{dir}}"
+    (ionSlideWillChange)="onSlideChangeStart()"
+  >
+    <ion-slide>
+      <div class="slide">
+        <p><b>{{ 'TUTORIAL_TOP_LABEL_HOW' | translate }}</b></p>
+        <p>
+          <ion-img
+            src="{{ 'TUTORIAL_IMAGE_SLIDE_1' | translate}}"
+            class="slide-image"
+          ></ion-img>
+        </p>
+        <h2>{{ 'TUTORIAL_TITLE_SLIDE_' + 1 | translate }}</h2>
+        <p>{{ "TUTORIAL_DESCRIPTION_SLIDE_1" | translate }}</p>
+      </div>
+    </ion-slide>
+    <ion-slide>
+      <div class="slide">
+        <p><b>{{ 'TUTORIAL_TOP_LABEL_HOW' | translate }}</b></p>
+        <p>
+          <ion-img
+            src="{{ 'TUTORIAL_IMAGE_SLIDE_2' | translate}}"
+            class="slide-image"
+          ></ion-img>
+        </p>
+        <h2>{{ 'TUTORIAL_TITLE_SLIDE_2' | translate }}</h2>
+        <p>{{ "TUTORIAL_DESCRIPTION_SLIDE_2" | translate }}</p>
+      </div>
+    </ion-slide>
+    <ion-slide>
+      <div class="slide">
+        <p><b>{{ 'TUTORIAL_TOP_LABEL_HOW' | translate }}</b></p>
+        <p>
+          <ion-img
+            src="{{ 'TUTORIAL_IMAGE_SLIDE_3' | translate}}"
+            class="slide-image"
+          ></ion-img>
+        </p>
+        <h2>{{ 'TUTORIAL_TITLE_SLIDE_3' | translate }}</h2>
+        <p>{{ "TUTORIAL_DESCRIPTION_SLIDE_3" | translate }}</p>
+      </div>
+    </ion-slide>
+    <ion-slide>
+      <div class="slide">
+        <p><b>{{ 'TUTORIAL_TOP_LABEL_HOW' | translate }}</b></p>
+        <p>
+          <ion-img
+            src="{{ 'TUTORIAL_IMAGE_SLIDE_4' | translate}}"
+            class="slide-image"
+          ></ion-img>
+        </p>
+        <h2>{{ 'TUTORIAL_TITLE_SLIDE_4' | translate }}</h2>
+        <p>{{ "TUTORIAL_DESCRIPTION_SLIDE_4" | translate }}</p>
+      </div>
+    </ion-slide>
+    <ion-slide>
+      <div class="slide">
+        <check-device></check-device>
+        <ion-card *ngIf="(this.bluetoothIsActive$ | async) && !(this.batteryOptimizerIsEnabled$ | async) && (this.geolocationIsGranted$ | async)">
+          <ion-card-header>
+            <p>{{ 'TUTORIAL_START_HANDSHAKE_DESCRIPTION' | translate }}</p>
+          </ion-card-header>
+          <ion-card-content>
+          <ion-button size="block" (click)="this.start()">{{ 'TUTORIAL_START_HANDSHAKE_BUTTON' | translate }}</ion-button>
+        </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-slide>
+  </ion-slides>
+  <ion-fab *ngIf="this.showSkip" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="this.slides.slideNext()">
+      <ion-icon name="arrow-forward-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

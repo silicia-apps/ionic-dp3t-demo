@@ -1,0 +1,39 @@
+<ion-card>
+  <ion-card-header><p><b>{{ 'TUTORIAL_TITLE_SLIDE_5' | translate }}</b></p>
+  </ion-card-header>
+  <ion-card-content>
+<fiv-stepper #stepperV [mode]="'vertical'">
+  <fiv-step
+    [icon]="(this.geolocationIsGranted$ | async)?'checkmark-outline':'alert-circle-outline'"
+    [open]="!(this.geolocationIsGranted$ | async)"
+    [title]="('TUTORIAL_LOCATION_PERMISSION_TITLE' | translate)"
+    [subtitle]="(this.geolocationIsGranted$ | async)?('TUTORIAL_LOCATION_PERMISSION_SUBTITLE_OK' | translate):('TUTORIAL_LOCATION_PERMISSION_SUBTITLE_KO' | translate)"
+  >
+    <p>{{ 'TUTORIAL_LOCATION_PERMISSION_INFO' | translate }}</p>
+    <ion-button (click)="this.AskForGeolocationPermission()"
+      >{{ 'TUTORIAL_LOCATION_PERMISSION_OK' | translate }}</ion-button
+    >
+  </fiv-step>
+  <fiv-step
+    [icon]="!(batteryOptimizerIsEnabled$ | async)?'checkmark-outline':'alert-circle-outline'"
+    [open]="(this.batteryOptimizerIsEnabled$ | async) && (this.geolocationIsGranted$ | async)"
+    [title]="('TUTORIAL_BATTERYSAFE_TITLE' | translate)"
+    [subtitle]="(batteryOptimizerIsEnabled$ | async)?('TUTORIAL_BATTERYSAFE_SUBTITLE_KO' | translate):('TUTORIAL_BATTERYSAFE_SUBTITLE_OK' | translate)"
+    ><p>{{ 'TUTORIAL_BATTERYSAFE_INFO' | translate }}</p>
+    <ion-button (click)="this.askForDisableBatteryOptimizer()"
+      >{{ 'TUTORIAL_BATTERYSAFE_OK' | translate }}</ion-button
+    >
+  </fiv-step>
+  <fiv-step
+    [icon]="(bluetoothIsActive$ | async)?'checkmark-outline':'alert-circle-outline'"
+    [open]="!(this.bluetoothIsActive$ | async) && !(this.batteryOptimizerIsEnabled$ | async) && (this.geolocationIsGranted$ | async)"
+    [title]="('TUTORIAL_BLUETOOTH_TITLE' | translate)"
+    [subtitle]="(bluetoothIsActive$ | async)?('TUTORIAL_BLUETOOTH_SUBTITLE_OK' | translate):('TUTORIAL_BLUETOOTH_SUBTITLE_KO' | translate)"
+    ><p>{{ 'TUTORIAL_BLUETOOTH_INFO' | translate }}</p>
+    <ion-button (click)="this.AskForActivateBluetooth()"
+      >{{ 'TUTORIAL_BLUETOOTH_OK' | translate }}</ion-button
+    >
+  </fiv-step>
+</fiv-stepper>
+</ion-card-content>
+</ion-card>
