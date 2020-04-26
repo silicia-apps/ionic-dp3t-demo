@@ -18,7 +18,7 @@ android {
     }
 }
 
-repositories {
+repositories {4t
     flatDir{
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
     }
