@@ -1,8 +1,7 @@
 # cov-it
 app demo for testing capacitor plugin @silicia/capacitor-dpt3, some layout is taken from official native app from dp3t project
 
-[[LIVE DEMO]](https://github.com/silicia-apps/cov-it/docs/demo/) * sdk not work in demo *
-[[SEE DEMO ON DEVICE]] (https://github.com/silicia-apps/cov-it/docs/screen/)
+[[SEE DEMO ON DEVICE]] (https://silicia-apps.github.io/cov-it/media/demo-android.mp4)
 
 ### Installation & Test
 
